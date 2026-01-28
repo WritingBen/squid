@@ -1,0 +1,290 @@
+/* Squid - CMUS-style YouTube Music TUI */
+/* Uses terminal ANSI colors for native look */
+
+/* Base styles - transparent to show terminal background */
+Screen {
+    background: ansi_default;
+}
+
+
+/* Containers transparent */
+Vertical {
+    background: ansi_default;
+}
+
+Horizontal {
+    background: ansi_default;
+}
+
+Container {
+    background: ansi_default;
+}
+
+/* View container */
+.view-container {
+    width: 100%;
+    height: 1fr;
+}
+
+/* Content row - main content + volume slider */
+#content-row {
+    width: 100%;
+    height: 1fr;
+}
+
+/* Main content area - where views are mounted */
+#main-content {
+    width: 1fr;
+    height: 100%;
+}
+
+#main-content > * {
+    width: 100%;
+    height: 100%;
+}
+
+/* Volume column on the right */
+#volume-column {
+    width: 8;
+    height: 100%;
+}
+
+/* Spacer to push volume slider to bottom */
+#volume-spacer {
+    height: 1fr;
+}
+
+/* Volume slider - 1/4 of window height */
+#volume-slider {
+    width: 100%;
+    height: 8;
+}
+
+/* Headers - use terminal's blue */
+.header {
+    height: 1;
+    background: ansi_blue;
+    color: ansi_white;
+    padding: 0 1;
+    text-style: bold;
+}
+
+/* Pane headers */
+.pane-header {
+    height: 1;
+    background: ansi_blue;
+    color: ansi_white;
+    padding: 0 1;
+}
+
+/* Status elements */
+.status-line {
+    height: 1;
+    background: $surface;
+    color: $text-muted;
+}
+
+/* Data tables */
+DataTable {
+    scrollbar-size: 1 1;
+    background: ansi_default;
+}
+
+/* Custom widgets */
+TrackList {
+    background: ansi_default;
+}
+
+ArtistTree {
+    background: ansi_default;
+}
+
+DataTable > .datatable--cursor {
+    background: ansi_yellow;
+    color: ansi_black;
+    text-style: bold;
+}
+
+DataTable > .datatable--header {
+    background: ansi_blue;
+    color: ansi_white;
+    text-style: bold;
+}
+
+/* Trees */
+Tree {
+    scrollbar-size: 1 1;
+    background: ansi_default;
+}
+
+Tree > .tree--cursor {
+    background: ansi_yellow;
+    color: ansi_black;
+    text-style: bold;
+}
+
+Tree > .tree--label {
+    color: $text;
+}
+
+Tree > .tree--guides {
+    color: ansi_bright_black;
+}
+
+/* Inputs */
+Input {
+    border: none;
+    background: $surface;
+    padding: 0 1;
+}
+
+Input:focus {
+    border: none;
+    background: $surface;
+}
+
+/* Buttons */
+Button {
+    min-width: 16;
+    background: ansi_blue;
+    color: ansi_white;
+}
+
+Button:hover {
+    background: ansi_bright_blue;
+}
+
+/* Progress bars */
+ProgressBar {
+    padding: 0;
+}
+
+ProgressBar Bar {
+    width: 1fr;
+}
+
+ProgressBar Bar > .bar--bar {
+    color: ansi_cyan;
+}
+
+ProgressBar Bar > .bar--complete {
+    color: ansi_green;
+}
+
+/* Radio buttons */
+RadioSet {
+    background: ansi_default;
+    border: none;
+    height: auto;
+    padding: 0;
+}
+
+RadioButton {
+    background: ansi_default;
+    border: none;
+    padding: 0 1;
+}
+
+RadioButton:focus {
+    text-style: bold;
+}
+
+/* Help text */
+.help-text {
+    color: ansi_bright_black;
+    text-style: italic;
+}
+
+/* Error text */
+.error-text {
+    color: ansi_red;
+}
+
+/* Success text */
+.success-text {
+    color: ansi_green;
+}
+
+/* Loading indicator */
+.loading {
+    text-align: center;
+    color: ansi_bright_black;
+}
+
+/* Header and Menubar */
+Header {
+    background: ansi_blue;
+    color: ansi_white;
+}
+
+/* Menubar (uses Footer widget, docked to top) */
+Footer {
+    width: 100%;
+    dock: top;
+    background: #0000aa;
+    color: #ffffff;
+}
+
+FooterKey {
+    width: auto;
+    background: #0000aa;
+    color: #ffffff;
+    .footer-key--key {
+        background: #0000aa;
+        color: #ffffff;
+        text-style: none;
+    }
+    .footer-key--description {
+        background: #0000aa;
+        color: #ffffff;
+        text-style: none;
+    }
+}
+
+FooterKey:hover {
+    background: #ffffff;
+    color: #0000aa;
+    text-style: none;
+    .footer-key--key {
+        background: #ffffff;
+        color: #0000aa;
+        text-style: none;
+    }
+    .footer-key--description {
+        background: #ffffff;
+        color: #0000aa;
+        text-style: none;
+    }
+}
+
+/* Status bar */
+StatusBar {
+    width: 100%;
+    height: 1;
+    background: $surface;
+}
+
+/* PlayBar - transport controls and progress */
+PlayBar {
+    width: 100%;
+    height: 3;
+    background: $surface;
+}
+
+PlayBar .transport-btn {
+    min-width: 4;
+    width: 4;
+    height: 1;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+PlayBar .transport-btn:hover {
+    background: ansi_blue;
+    color: ansi_white;
+}
+
+PlayBar .transport-btn:focus {
+    background: ansi_blue;
+}
