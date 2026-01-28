@@ -1,5 +1,5 @@
 # Maintainer: Ben <your-email@example.com>
-pkgname=squid-git
+pkgname=squid-music-git
 pkgver=0.1.0
 pkgrel=1
 pkgdesc="A CMUS-inspired terminal frontend for YouTube Music"
@@ -25,8 +25,8 @@ makedepends=(
     'python-hatchling'
     'git'
 )
-provides=('squid')
-conflicts=('squid')
+provides=('squid-music')
+conflicts=('squid-music')
 source=("${pkgname}::git+${url}.git")
 sha256sums=('SKIP')
 
