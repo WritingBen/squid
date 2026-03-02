@@ -288,3 +288,4 @@ PlayBar .transport-btn:hover {
 PlayBar .transport-btn:focus {
     background: ansi_blue;
 }
+

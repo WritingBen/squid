@@ -101,7 +101,11 @@ class YouTubeMusicClient:
             return Playlist.model_validate(cached)
 
         log.info("Fetching liked songs")
-        data = await self._run_sync(self.ytmusic.get_liked_songs, limit=limit)
+        try:
+            data = await self._run_sync(self.ytmusic.get_liked_songs, limit=limit)
+        except KeyError as e:
+            log.warning("Failed to fetch liked songs (auth may have expired)", error=str(e))
+            return Playlist(id="LM", title="Liked Songs", tracks=[], track_count=0)
         playlist = Playlist(
             id="LM",
             title="Liked Songs",
@@ -187,12 +191,26 @@ class YouTubeMusicClient:
 
     async def get_library_data(self) -> LibraryData:
         """Get complete library data."""
-        artists, albums, playlists, liked = await asyncio.gather(
+        results = await asyncio.gather(
             self.get_library_artists(),
             self.get_library_albums(),
             self.get_library_playlists(),
             self.get_liked_songs(),
+            return_exceptions=True,
         )
+
+        artists = results[0] if not isinstance(results[0], BaseException) else []
+        albums = results[1] if not isinstance(results[1], BaseException) else []
+        playlists = results[2] if not isinstance(results[2], BaseException) else []
+        liked = results[3] if not isinstance(results[3], BaseException) else Playlist(
+            id="LM", title="Liked Songs", tracks=[], track_count=0,
+        )
+
+        for i, r in enumerate(results):
+            if isinstance(r, BaseException):
+                labels = ["artists", "albums", "playlists", "liked songs"]
+                log.error("Failed to load library component", component=labels[i], error=str(r))
+
         return LibraryData(
             artists=artists,
             albums=albums,

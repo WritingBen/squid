@@ -116,6 +116,15 @@ class PlayQueue:
             return self.current
         return None
 
+    def peek_next(self) -> Track | None:
+        """Get next track without advancing.
+
+        Used for gapless playback prefetching.
+        """
+        if self._current_index < len(self._tracks) - 1:
+            return self._tracks[self._current_index + 1]
+        return None
+
     def previous(self) -> Track | None:
         """Go to previous track."""
         if self._history:

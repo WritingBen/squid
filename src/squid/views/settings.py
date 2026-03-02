@@ -113,7 +113,7 @@ class SettingsView(Widget):
                 yield Static("Playback", classes="section-title")
                 with Horizontal(classes="setting-row"):
                     yield Label("Default volume:", classes="setting-label")
-                    yield Label("80%", id="default-volume", classes="setting-value")
+                    yield Label("100%", id="default-volume", classes="setting-value")
                 with Horizontal(classes="setting-row"):
                     yield Label("Cache TTL:", classes="setting-label")
                     yield Label("24 hours", id="cache-ttl", classes="setting-value")

@@ -9,6 +9,7 @@ from squid.widgets.playbar import PlayBar
 from squid.widgets.splitter import VerticalSplitter
 from squid.widgets.volume_slider import VolumeSlider
 from squid.widgets.resizable_header import ResizableHeader, ColumnDef
+from squid.widgets.visualizer import Visualizer, VisualizerMode
 
 __all__ = [
     "TrackList",
@@ -21,4 +22,6 @@ __all__ = [
     "VolumeSlider",
     "ResizableHeader",
     "ColumnDef",
+    "Visualizer",
+    "VisualizerMode",
 ]

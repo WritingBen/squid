@@ -48,12 +48,12 @@ class VolumeSlider(Widget):
     }
     """
 
-    volume: reactive[int] = reactive(80)
+    volume: reactive[int] = reactive(100)
 
     def compose(self) -> ComposeResult:
         yield Static("Vol", classes="volume-label")
         yield Static("", id="bar-container", classes="volume-bar-container")
-        yield Static("80%", id="percent", classes="volume-percent")
+        yield Static("100%", id="percent", classes="volume-percent")
 
     def on_mount(self) -> None:
         """Initialize display."""

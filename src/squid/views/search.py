@@ -80,9 +80,11 @@ class SearchView(Widget):
     class TrackSelected(Message):
         """Track was selected."""
 
-        def __init__(self, track: Track) -> None:
+        def __init__(self, track: Track, index: int, all_tracks: list[Track]) -> None:
             super().__init__()
             self.track = track
+            self.index = index
+            self.all_tracks = all_tracks
 
     class AlbumSelected(Message):
         """Album was selected."""
@@ -269,7 +271,10 @@ class SearchView(Widget):
             if idx < len(self._current_items):
                 item = self._current_items[idx]
                 if isinstance(item, Track):
-                    self.post_message(self.TrackSelected(item))
+                    # Get all tracks from results for continuous playback
+                    all_tracks = [i for i in self._current_items if isinstance(i, Track)]
+                    track_index = all_tracks.index(item) if item in all_tracks else 0
+                    self.post_message(self.TrackSelected(item, track_index, all_tracks))
                 elif isinstance(item, Album):
                     self.post_message(self.AlbumSelected(item))
                 elif isinstance(item, Artist):

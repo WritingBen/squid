@@ -21,27 +21,26 @@ log = structlog.get_logger()
 class MPVBackend:
     """MPV-based audio playback backend."""
 
-    def __init__(self, initial_volume: int = 80) -> None:
+    def __init__(self, initial_volume: int = 100) -> None:
         self._player: mpv.MPV | None = None
         self._stream_extractor = StreamExtractor()
         self._state = PlaybackState(volume=initial_volume)
         self._state_callbacks: list[Callable[[PlaybackState], None]] = []
         self._end_callbacks: list[Callable[[], None]] = []
-        self._lock = threading.Lock()  # Use threading lock for cross-thread safety
-        self._starting_playback = False  # Flag to prevent race condition
+        self._lock = threading.Lock()
+        self._starting_playback = False
 
     def _init_player(self) -> mpv.MPV:
         """Initialize MPV player."""
         import locale
-        # Fix locale for MPV (prevents "Non-C locale detected" warning/crash)
         locale.setlocale(locale.LC_NUMERIC, "C")
 
         player = mpv.MPV(
             video=False,
-            ytdl=False,  # We use yt-dlp directly
+            ytdl=False,
             input_default_bindings=False,
             input_vo_keyboard=False,
-            terminal=False,  # Disable terminal output (conflicts with TUI)
+            terminal=False,
         )
         player.volume = self._state.volume
 
@@ -68,8 +67,6 @@ class MPVBackend:
 
         @player.property_observer("idle-active")
         def on_idle(_name: str, value: bool | None) -> None:
-            # Only trigger stop if we're not in the process of starting playback
-            # This prevents a race condition where idle-active=True fires during startup
             if value and self._state.state == PlayerState.PLAYING and not self._starting_playback:
                 self._state.state = PlayerState.STOPPED
                 self._notify_state()
@@ -116,7 +113,6 @@ class MPVBackend:
     async def play(self, track: Track) -> None:
         """Play a track."""
         with self._lock:
-            # Skip if already playing or loading this track
             if (self._state.current_track and
                 self._state.current_track.id == track.id and
                 self._state.state in (PlayerState.PLAYING, PlayerState.LOADING)):
@@ -131,10 +127,13 @@ class MPVBackend:
             self._notify_state()
 
             try:
-                stream_url = await self._stream_extractor.extract_for_track(track)
-                # Set flag to prevent idle-active race condition during startup
+                stream_info = await self._stream_extractor.extract_for_track(track)
                 self._starting_playback = True
-                self.player.play(stream_url)
+                if stream_info.http_headers:
+                    self.player["http-header-fields"] = [
+                        f"{k}: {v}" for k, v in stream_info.http_headers.items()
+                    ]
+                self.player.play(stream_info.url)
                 self._state.state = PlayerState.PLAYING
                 log.info("Playing track", title=track.title)
             except StreamError as e:
@@ -145,7 +144,6 @@ class MPVBackend:
 
             self._notify_state()
 
-        # Wait outside the lock for MPV to start, then clear the flag
         if self._state.state == PlayerState.PLAYING:
             await asyncio.sleep(0.5)
             self._starting_playback = False

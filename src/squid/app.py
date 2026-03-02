@@ -11,6 +11,7 @@ from textual import work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.containers import Vertical, Horizontal
+from textual.message import Message
 from textual.widget import Widget
 from textual.widgets import Footer, Header, Static
 
@@ -65,9 +66,10 @@ class SquidApp(App):
         Binding("r", "cycle_repeat", "Repeat", show=False),
         Binding("l", "seek_forward", "Seek+", show=False),
         Binding("h", "seek_backward", "Seek-", show=False),
+        Binding("w", "cycle_visualizer", "Visualizer", show=False),
         Binding(":", "command_mode", "Command", show=False),
         Binding("/", "search_mode", "Search", show=False),
-        Binding("q", "quit", "[Quit]", key_display=" ", show=True),
+        Binding("q", "quit", "Quit", show=False),
     ]
 
     def __init__(self, config: Config, **kwargs) -> None:
@@ -191,7 +193,7 @@ class SquidApp(App):
                 view.set_current_track(track_id)
 
     def _on_track_end(self) -> None:
-        """Handle track end."""
+        """Handle track end - called from MPV's thread."""
         import threading
         if threading.current_thread() is threading.main_thread():
             self._advance_queue()
@@ -357,6 +359,23 @@ class SquidApp(App):
         if self.player:
             self.player.seek(-10)
 
+    def action_cycle_visualizer(self) -> None:
+        """Cycle visualizer mode."""
+        if self._current_view == "now_playing":
+            from squid.widgets.visualizer import Visualizer, VisualizerMode
+
+            view = self._get_view("now_playing")
+            if isinstance(view, NowPlayingView):
+                visualizer = view.query_one("#visualizer", Visualizer)
+                new_mode = visualizer.cycle_mode()
+                mode_names = {
+                    VisualizerMode.SPECTRUM: "Spectrum",
+                    VisualizerMode.WAVE: "Wave",
+                    VisualizerMode.PARTICLES: "Particles",
+                    VisualizerMode.GEOMETRIC: "Geometric",
+                }
+                self.notify(f"Visualizer: {mode_names.get(new_mode, new_mode.name)}")
+
     def action_volume_up(self) -> None:
         """Increase volume."""
         if self.player:
@@ -499,9 +518,11 @@ class SquidApp(App):
     def on_track_list_track_selected(self, event) -> None:
         """Handle track selection from any view."""
         track = event.track
-        log.info("Track selected", title=track.title, id=track.id)
-        # Replace queue with current context and play
-        self.queue.replace([track], 0)
+        all_tracks = event.all_tracks
+        index = event.index
+        log.info("Track selected", title=track.title, index=index, total_tracks=len(all_tracks))
+        # Replace queue with all tracks from context, starting at selected index
+        self.queue.replace(all_tracks, index)
         if self.player:
             self._play_track(track)
         self._update_queue_view()
@@ -540,6 +561,17 @@ class SquidApp(App):
     def on_artist_tree_playlist_selected(self, event) -> None:
         """Handle playlist selection from library tree."""
         self._fetch_playlist_for_library(event.playlist.id)
+
+    def on_search_view_track_selected(self, event) -> None:
+        """Handle track selection from search results."""
+        track = event.track
+        all_tracks = event.all_tracks
+        index = event.index
+        log.info("Search track selected", title=track.title, index=index, total_tracks=len(all_tracks))
+        self.queue.replace(all_tracks, index)
+        if self.player:
+            self._play_track(track)
+        self._update_queue_view()
 
     @work(exclusive=True, thread=True)
     def _fetch_playlist_for_library(self, playlist_id: str) -> None:

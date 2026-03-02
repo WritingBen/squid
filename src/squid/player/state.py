@@ -36,7 +36,7 @@ class PlaybackState:
     current_track: Track | None = None
     position: float = 0.0
     duration: float = 0.0
-    volume: int = 80
+    volume: int = 100
     muted: bool = False
     shuffle: bool = False
     repeat: RepeatMode = RepeatMode.OFF

@@ -53,10 +53,11 @@ class TrackList(Widget):
     class TrackSelected(Message):
         """Track was selected for playback."""
 
-        def __init__(self, track: Track, index: int) -> None:
+        def __init__(self, track: Track, index: int, all_tracks: list[Track]) -> None:
             super().__init__()
             self.track = track
             self.index = index
+            self.all_tracks = all_tracks
 
     class TrackAddToQueue(Message):
         """Track should be added to queue."""
@@ -245,7 +246,7 @@ class TrackList(Widget):
         """Select track at given row."""
         if row is not None and row < len(self._track_list):
             track = self._track_list[row]
-            self.post_message(self.TrackSelected(track, row))
+            self.post_message(self.TrackSelected(track, row, list(self._track_list)))
 
     def action_add_to_queue(self) -> None:
         """Add current track to queue."""

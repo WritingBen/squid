@@ -41,7 +41,7 @@ class Config:
     cache_dir: Path = field(default_factory=get_cache_dir)
 
     # Playback
-    default_volume: int = 80
+    default_volume: int = 100
 
     # Cache
     cache_ttl_hours: int = 24

@@ -11,6 +11,7 @@ from textual.widgets import Static
 from textual.binding import Binding
 
 from squid.widgets.progress_bar import ProgressBar as PlaybackProgressBar
+from squid.widgets.visualizer import Visualizer
 
 if TYPE_CHECKING:
     from squid.api.models import Track
@@ -75,6 +76,12 @@ class NowPlayingView(Widget):
         width: 100%;
         margin: 1 0;
     }
+
+    NowPlayingView Visualizer {
+        width: 100%;
+        height: 8;
+        margin: 1 0;
+    }
     """
 
     def __init__(self, **kwargs) -> None:
@@ -89,6 +96,7 @@ class NowPlayingView(Widget):
                     yield Static("", id="track-title", classes="track-title")
                     yield Static("", id="track-artist", classes="track-artist")
                     yield Static("", id="track-album", classes="track-album")
+                    yield Visualizer(id="visualizer")
                     yield PlaybackProgressBar(id="progress-bar")
                     yield Static("", id="playback-status", classes="playback-status")
 
@@ -120,6 +128,9 @@ class NowPlayingView(Widget):
         """Update playback state display."""
         progress_bar = self.query_one("#progress-bar", PlaybackProgressBar)
         progress_bar.update_from_state(state)
+
+        visualizer = self.query_one("#visualizer", Visualizer)
+        visualizer.update_from_state(state)
 
         status = self.query_one("#playback-status", Static)
         status_parts = []

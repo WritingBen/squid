@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass, field
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -22,6 +23,14 @@ class StreamError(Exception):
     pass
 
 
+@dataclass
+class StreamInfo:
+    """Stream URL and associated metadata."""
+
+    url: str
+    http_headers: dict[str, str] = field(default_factory=dict)
+
+
 class StreamExtractor:
     """Extract audio stream URLs using yt-dlp."""
 
@@ -35,17 +44,20 @@ class StreamExtractor:
             "extract_flat": False,
         }
 
-    def _extract_sync(self, video_id: str) -> str:
-        """Synchronously extract stream URL."""
+    def _extract_sync(self, video_id: str) -> StreamInfo:
+        """Synchronously extract stream URL and headers."""
         url = f"https://music.youtube.com/watch?v={video_id}"
         with yt_dlp.YoutubeDL(self._ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             if not info:
                 raise StreamError(f"Failed to extract info for {video_id}")
 
-            # Get best audio URL
+            # Get best audio format
             if "url" in info:
-                return info["url"]
+                return StreamInfo(
+                    url=info["url"],
+                    http_headers=info.get("http_headers", {}),
+                )
 
             formats = info.get("formats", [])
             audio_formats = [f for f in formats if f.get("acodec") != "none"]
@@ -57,24 +69,27 @@ class StreamExtractor:
 
             # Prefer higher quality
             best = max(audio_formats, key=lambda f: f.get("abr", 0) or 0)
-            return best["url"]
+            return StreamInfo(
+                url=best["url"],
+                http_headers=best.get("http_headers", {}),
+            )
 
-    async def extract(self, video_id: str) -> str:
-        """Extract stream URL for a video ID."""
+    async def extract(self, video_id: str) -> StreamInfo:
+        """Extract stream info for a video ID."""
         log.info("Extracting stream URL", video_id=video_id)
         loop = asyncio.get_event_loop()
         try:
-            url = await loop.run_in_executor(
+            stream_info = await loop.run_in_executor(
                 self._executor, partial(self._extract_sync, video_id)
             )
             log.debug("Stream URL extracted", video_id=video_id)
-            return url
+            return stream_info
         except Exception as e:
             log.error("Stream extraction failed", video_id=video_id, error=str(e))
             raise StreamError(f"Failed to extract stream: {e}") from e
 
-    async def extract_for_track(self, track: Track) -> str:
-        """Extract stream URL for a track."""
+    async def extract_for_track(self, track: Track) -> StreamInfo:
+        """Extract stream info for a track."""
         video_id = track.video_id or track.id
         if not video_id:
             raise StreamError("Track has no video ID")

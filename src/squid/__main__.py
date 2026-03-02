@@ -30,7 +30,12 @@ def setup_logging(verbose: bool = False) -> None:
         cache_logger_on_first_use=True,
     )
 
-    logging.basicConfig(level=level, format="%(message)s", stream=sys.stderr)
+    # Write logs to file when verbose, so they're visible even with TUI
+    if verbose:
+        log_file = open("/tmp/squid.log", "w")
+        logging.basicConfig(level=level, format="%(message)s", stream=log_file)
+    else:
+        logging.basicConfig(level=level, format="%(message)s", stream=sys.stderr)
 
 
 def parse_args() -> argparse.Namespace:
