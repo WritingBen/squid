@@ -17,6 +17,7 @@ depends=(
     'python-ytmusicapi'  # AUR
     'python-mpv'         # AUR
     'yt-dlp'
+    'deno'
     'mpv'
 )
 makedepends=(

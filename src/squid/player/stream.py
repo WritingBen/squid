@@ -42,6 +42,11 @@ class StreamExtractor:
             "quiet": True,
             "no_warnings": True,
             "extract_flat": False,
+            "allow_unplayable_formats": False,
+            "extractor_args": {
+                "youtube": {"player_client": ["default", "web_safari"]},
+            },
+            "remote_components": {"ejs": "github"},
         }
 
     def _extract_sync(self, video_id: str) -> StreamInfo:
