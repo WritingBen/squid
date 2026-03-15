@@ -147,6 +147,15 @@ class MPVBackend:
         if self._state.state == PlayerState.PLAYING:
             await asyncio.sleep(0.5)
             self._starting_playback = False
+            # Catch fast failures: if MPV went idle during startup, the on_idle
+            # callback was suppressed by _starting_playback. Check now.
+            if self._player and self._player.idle_active:
+                log.error("Track failed to start (MPV idle after play)",
+                          title=track.title)
+                self._state.state = PlayerState.ERROR
+                self._state.error_message = "Failed to start playback"
+                self._notify_state()
+                self._notify_end()
 
     def pause(self) -> None:
         """Pause playback."""

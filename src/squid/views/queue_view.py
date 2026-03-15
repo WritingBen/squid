@@ -93,7 +93,7 @@ class QueueView(Widget):
         yield Static("Play Queue", classes="pane-header")
         yield Static("0 tracks", id="queue-info", classes="queue-info")
         table = DataTable(id="queue-table", cursor_type="row")
-        table.add_columns("#", "Title", "Artist", "Album", "Duration")
+        table.add_columns("Title", "Artist", "Album", "Duration")
         yield table
 
     def update_queue(self, tracks: list[Track], current_index: int) -> None:
@@ -115,11 +115,9 @@ class QueueView(Widget):
         )
 
         for i, track in enumerate(self._tracks):
-            # Mark current track
-            marker = ">" if i == self._current_index else " "
+            prefix = "▶ " if i == self._current_index else ""
             table.add_row(
-                f"{marker}{i + 1}",
-                track.title[:40],
+                (prefix + track.title)[:40],
                 track.artist_names[:25],
                 (track.album.title if track.album else "")[:20],
                 track.duration_str,

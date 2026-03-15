@@ -175,6 +175,10 @@ class SquidApp(App):
         play_bar = self.query_one("#play-bar", PlayBar)
         play_bar.update_state(state)
 
+        # Notify user on playback errors
+        if state.state == PlayerState.ERROR and state.error_message:
+            self.notify(f"Playback error: {state.error_message}", severity="error")
+
         # Update current track in views
         track_id = state.current_track.id if state.current_track else None
         self._update_track_highlight(track_id)
@@ -543,6 +547,7 @@ class SquidApp(App):
                 loop.close()
         except Exception as e:
             log.error("_play_track failed", title=track.title, error=str(e))
+            self.notify(f"Playback failed: {e}", severity="error")
 
     def on_track_list_track_add_to_queue(self, event) -> None:
         """Handle add to queue."""

@@ -76,7 +76,6 @@ class TrackList(Widget):
         self._sort_ascending: bool = True
         # Column definitions with default widths
         self._columns = [
-            ColumnDef("#", 5, min_width=4, resizable=False),
             ColumnDef("Title", 25, min_width=10),
             ColumnDef("Artist", 15, min_width=8),
             ColumnDef("Album", 12, min_width=6),
@@ -105,7 +104,7 @@ class TrackList(Widget):
         """Highlight currently playing track."""
         self._refresh_table()
 
-    def _get_column_widths(self) -> tuple[int, int, int, int, int]:
+    def _get_column_widths(self) -> tuple[int, int, int, int]:
         """Get current column widths from header (source of truth)."""
         try:
             header = self.query_one("#track-header", ResizableHeader)
@@ -123,15 +122,13 @@ class TrackList(Widget):
         tracks = list(self._track_list)
 
         def get_sort_key(track: Track):
-            if self._sort_column == 0:  # # (original order/index)
-                return self._track_list.index(track) if track in self._track_list else 0
-            elif self._sort_column == 1:  # Title
+            if self._sort_column == 0:  # Title
                 return track.title.lower()
-            elif self._sort_column == 2:  # Artist
+            elif self._sort_column == 1:  # Artist
                 return track.artist_names.lower()
-            elif self._sort_column == 3:  # Album
+            elif self._sort_column == 2:  # Album
                 return (track.album.title if track.album else "").lower()
-            elif self._sort_column == 4:  # Time
+            elif self._sort_column == 3:  # Time
                 return track.duration_seconds
             return 0
 
@@ -144,14 +141,13 @@ class TrackList(Widget):
         table.clear()
 
         # Get column widths
-        num_w, title_w, artist_w, album_w, dur_w = self._get_column_widths()
+        title_w, artist_w, album_w, dur_w = self._get_column_widths()
 
         # Update DataTable column widths (include separator space in each column)
         # DataTable adds 1-char padding on each side of cells, so reduce content width by 2
         cell_pad = 2
         # Columns with separator after: Title, Artist, Album (add 1 for separator space)
         widths = [
-            max(1, num_w - cell_pad),  # # (no separator after)
             max(1, title_w + 1 - cell_pad),  # Title + separator
             max(1, artist_w + 1 - cell_pad),  # Artist + separator
             max(1, album_w + 1 - cell_pad),  # Album + separator
@@ -165,23 +161,17 @@ class TrackList(Widget):
         sorted_tracks = self._get_sorted_tracks()
 
         for i, track in enumerate(sorted_tracks):
-            # Find original index for highlighting
-            orig_idx = self._track_list.index(track) if track in self._track_list else i
-
             # Highlight current track
-            num = f">{orig_idx + 1}" if track.id == self.current_track_id else f" {orig_idx + 1}"
+            prefix = "▶ " if track.id == self.current_track_id else ""
 
-            # Pad/truncate to column widths (include separator space for middle columns)
-            num = num.ljust(num_w)[:num_w]
             # Add separator space (│) after Title, Artist, Album
-            title = (track.title.ljust(title_w)[:title_w] + "│")
+            title = ((prefix + track.title).ljust(title_w)[:title_w] + "│")
             artist = (track.artist_names.ljust(artist_w)[:artist_w] + "│")
             album_title = track.album.title if track.album else ""
             album = (album_title.ljust(album_w)[:album_w] + "│")
             dur = track.duration_str.ljust(dur_w)[:dur_w]
 
             table.add_row(
-                num,
                 title,
                 artist,
                 album,
@@ -244,15 +234,17 @@ class TrackList(Widget):
 
     def _select_row(self, row: int | None) -> None:
         """Select track at given row."""
-        if row is not None and row < len(self._track_list):
-            track = self._track_list[row]
-            self.post_message(self.TrackSelected(track, row, list(self._track_list)))
+        sorted_tracks = self._get_sorted_tracks()
+        if row is not None and row < len(sorted_tracks):
+            track = sorted_tracks[row]
+            self.post_message(self.TrackSelected(track, row, sorted_tracks))
 
     def action_add_to_queue(self) -> None:
         """Add current track to queue."""
         table = self.query_one("#track-table", DataTable)
-        if table.cursor_row is not None and table.cursor_row < len(self._track_list):
-            track = self._track_list[table.cursor_row]
+        sorted_tracks = self._get_sorted_tracks()
+        if table.cursor_row is not None and table.cursor_row < len(sorted_tracks):
+            track = sorted_tracks[table.cursor_row]
             self.post_message(self.TrackAddToQueue(track))
 
     def set_tracks(self, tracks: list[Track]) -> None:

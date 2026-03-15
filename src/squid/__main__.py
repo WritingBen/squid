@@ -11,8 +11,10 @@ from squid.config import get_config
 def setup_logging(verbose: bool = False) -> None:
     """Configure structured logging."""
     import logging
+    from pathlib import Path
+    from platformdirs import user_cache_dir
 
-    level = logging.DEBUG if verbose else logging.WARNING
+    level = logging.DEBUG if verbose else logging.INFO
 
     structlog.configure(
         processors=[
@@ -30,12 +32,16 @@ def setup_logging(verbose: bool = False) -> None:
         cache_logger_on_first_use=True,
     )
 
-    # Write logs to file when verbose, so they're visible even with TUI
+    log_dir = Path(user_cache_dir("squid"))
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "squid.log"
+
+    # Always log to persistent file; verbose also logs to /tmp for live tailing
+    handlers = [logging.FileHandler(log_path, mode="a")]
     if verbose:
-        log_file = open("/tmp/squid.log", "w")
-        logging.basicConfig(level=level, format="%(message)s", stream=log_file)
-    else:
-        logging.basicConfig(level=level, format="%(message)s", stream=sys.stderr)
+        handlers.append(logging.FileHandler("/tmp/squid.log", mode="w"))
+
+    logging.basicConfig(level=level, format="%(message)s", handlers=handlers)
 
 
 def parse_args() -> argparse.Namespace:
