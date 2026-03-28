@@ -33,15 +33,15 @@ class SettingsView(Widget):
 
     SettingsView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 
     SettingsView .settings-section {
         padding: 1;
         margin: 1;
-        border: round ansi_blue;
+        border: round #3f3f3f;
     }
 
     SettingsView .section-title {
@@ -60,7 +60,7 @@ class SettingsView(Widget):
 
     SettingsView .setting-value {
         width: 1fr;
-        color: ansi_cyan;
+        color: #8cd0d3;
     }
 
     SettingsView .keybindings-table {

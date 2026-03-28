@@ -40,15 +40,15 @@ class QueueView(Widget):
 
     QueueView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 
     QueueView .queue-info {
         height: 1;
-        background: $surface;
-        color: ansi_bright_black;
+        background: #2e2e2e;
+        color: #6f6f6f;
         padding: 0 1;
     }
 

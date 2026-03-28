@@ -18,7 +18,7 @@ class StatusBar(Widget):
     StatusBar {
         width: 100%;
         height: 1;
-        background: $surface;
+        background: #2e2e2e;
     }
 
     StatusBar Horizontal {
@@ -27,18 +27,18 @@ class StatusBar(Widget):
 
     StatusBar .status-state {
         width: 5;
-        color: ansi_green;
+        color: #7f9f7f;
     }
 
     StatusBar .status-track {
         width: 1fr;
-        color: $text;
+        color: #dcdccc;
     }
 
     StatusBar .status-modes {
         width: 6;
         text-align: right;
-        color: ansi_magenta;
+        color: #dc8cc3;
     }
     """
 

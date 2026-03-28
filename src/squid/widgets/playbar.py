@@ -44,7 +44,7 @@ class PlayBar(Widget):
     PlayBar {
         width: 100%;
         height: 3;
-        background: $surface;
+        background: #2e2e2e;
         layout: vertical;
     }
 

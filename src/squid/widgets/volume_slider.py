@@ -23,8 +23,8 @@ class VolumeSlider(Widget):
     VolumeSlider {
         width: 100%;
         height: 100%;
-        background: $surface;
-        border: round ansi_blue;
+        background: #2e2e2e;
+        border: round #3f3f3f;
         padding: 0 1;
     }
 
@@ -32,7 +32,7 @@ class VolumeSlider(Widget):
         height: 1;
         width: 100%;
         text-align: center;
-        color: ansi_cyan;
+        color: #8cd0d3;
     }
 
     VolumeSlider .volume-bar-container {
@@ -44,7 +44,7 @@ class VolumeSlider(Widget):
         height: 1;
         width: 100%;
         text-align: center;
-        color: ansi_white;
+        color: #dcdccc;
     }
     """
 

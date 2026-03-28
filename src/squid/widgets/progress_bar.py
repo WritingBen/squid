@@ -26,7 +26,7 @@ class ProgressBar(Widget):
 
     ProgressBar .progress-time-left {
         width: 10;
-        color: ansi_bright_black;
+        color: #6f6f6f;
     }
 
     ProgressBar .progress-bar {
@@ -36,7 +36,7 @@ class ProgressBar(Widget):
     ProgressBar .progress-time-right {
         width: 10;
         text-align: right;
-        color: ansi_bright_black;
+        color: #6f6f6f;
     }
     """
 

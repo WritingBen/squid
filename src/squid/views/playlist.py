@@ -39,7 +39,7 @@ class PlaylistView(Widget):
     PlaylistView .playlist-list-pane {
         width: 35%;
         height: 100%;
-        border-right: solid ansi_blue;
+        border-right: solid #3f3f3f;
     }
 
     PlaylistView .playlist-tracks-pane {
@@ -49,8 +49,8 @@ class PlaylistView(Widget):
 
     PlaylistView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 

@@ -37,38 +37,38 @@ class NowPlayingView(Widget):
         width: 60%;
         height: auto;
         padding: 2;
-        border: round ansi_blue;
-        background: $surface;
+        border: round #3f3f3f;
+        background: #2e2e2e;
     }
 
     NowPlayingView .track-title {
         text-align: center;
         text-style: bold;
-        color: $text;
+        color: #dcdccc;
         padding: 1;
     }
 
     NowPlayingView .track-artist {
         text-align: center;
-        color: ansi_cyan;
+        color: #8cd0d3;
         padding: 0 1 1 1;
     }
 
     NowPlayingView .track-album {
         text-align: center;
-        color: ansi_bright_black;
+        color: #6f6f6f;
         padding: 0 1 2 1;
     }
 
     NowPlayingView .playback-status {
         text-align: center;
-        color: ansi_bright_black;
+        color: #6f6f6f;
         padding: 1;
     }
 
     NowPlayingView .no-track {
         text-align: center;
-        color: ansi_bright_black;
+        color: #6f6f6f;
         padding: 2;
     }
 

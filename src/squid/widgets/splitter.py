@@ -25,18 +25,18 @@ class VerticalSplitter(Widget):
     VerticalSplitter {
         width: 1;
         height: 100%;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #6f6f6f;
     }
 
     VerticalSplitter:hover {
-        background: ansi_bright_blue;
-        color: ansi_yellow;
+        background: #4f4f4f;
+        color: #f0dfaf;
     }
 
     VerticalSplitter.-dragging {
-        background: ansi_cyan;
-        color: ansi_white;
+        background: #4f4f4f;
+        color: #dcdccc;
     }
     """
 

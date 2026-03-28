@@ -18,7 +18,7 @@ class CommandLine(Widget):
     CommandLine {
         width: 100%;
         height: 1;
-        background: $surface;
+        background: #2e2e2e;
         display: none;
     }
 
@@ -32,7 +32,7 @@ class CommandLine(Widget):
 
     CommandLine .command-prefix {
         width: 1;
-        color: ansi_yellow;
+        color: #f0dfaf;
     }
 
     CommandLine Input {

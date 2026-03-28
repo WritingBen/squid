@@ -45,8 +45,8 @@ class LibraryTreeView(Widget):
 
     LibraryTreeView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 
@@ -174,15 +174,15 @@ class LibrarySortedView(Widget):
 
     LibrarySortedView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 
     LibrarySortedView .sort-info {
         height: 1;
         background: ansi_default;
-        color: ansi_bright_black;
+        color: #6f6f6f;
         padding: 0 1;
     }
     """

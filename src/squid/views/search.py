@@ -39,7 +39,7 @@ class SearchView(Widget):
     SearchView .search-header {
         height: 3;
         padding: 1;
-        background: $surface;
+        background: #2e2e2e;
     }
 
     SearchView .search-header Input {
@@ -49,13 +49,13 @@ class SearchView(Widget):
     SearchView .filter-bar {
         height: 3;
         padding: 0 1;
-        background: $surface;
+        background: #2e2e2e;
     }
 
     SearchView .pane-header {
         height: 1;
-        background: ansi_blue;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #dcdccc;
         padding: 0 1;
     }
 

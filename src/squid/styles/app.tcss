@@ -1,5 +1,6 @@
 /* Squid - CMUS-style YouTube Music TUI */
-/* Uses terminal ANSI colors for native look */
+/* Zenburn-inspired theme matching foot terminal */
+/* bg: #1c1c1c  fg: #dcdccc  accent: muted warm tones */
 
 /* Base styles - transparent to show terminal background */
 Screen {
@@ -60,11 +61,11 @@ Container {
     height: 8;
 }
 
-/* Headers - use terminal's blue */
+/* Headers - muted dark surface */
 .header {
     height: 1;
-    background: ansi_blue;
-    color: ansi_white;
+    background: #3f3f3f;
+    color: #dcdccc;
     padding: 0 1;
     text-style: bold;
 }
@@ -72,16 +73,16 @@ Container {
 /* Pane headers */
 .pane-header {
     height: 1;
-    background: ansi_blue;
-    color: ansi_white;
+    background: #3f3f3f;
+    color: #dcdccc;
     padding: 0 1;
 }
 
 /* Status elements */
 .status-line {
     height: 1;
-    background: $surface;
-    color: $text-muted;
+    background: #2e2e2e;
+    color: #6f6f6f;
 }
 
 /* Data tables */
@@ -100,14 +101,14 @@ ArtistTree {
 }
 
 DataTable > .datatable--cursor {
-    background: ansi_yellow;
-    color: ansi_black;
+    background: #4f4f4f;
+    color: #f0dfaf;
     text-style: bold;
 }
 
 DataTable > .datatable--header {
-    background: ansi_blue;
-    color: ansi_white;
+    background: #3f3f3f;
+    color: #dcdccc;
     text-style: bold;
 }
 
@@ -118,40 +119,40 @@ Tree {
 }
 
 Tree > .tree--cursor {
-    background: ansi_yellow;
-    color: ansi_black;
+    background: #4f4f4f;
+    color: #f0dfaf;
     text-style: bold;
 }
 
 Tree > .tree--label {
-    color: $text;
+    color: #dcdccc;
 }
 
 Tree > .tree--guides {
-    color: ansi_bright_black;
+    color: #4f4f4f;
 }
 
 /* Inputs */
 Input {
     border: none;
-    background: $surface;
+    background: #2e2e2e;
     padding: 0 1;
 }
 
 Input:focus {
     border: none;
-    background: $surface;
+    background: #3f3f3f;
 }
 
 /* Buttons */
 Button {
     min-width: 16;
-    background: ansi_blue;
-    color: ansi_white;
+    background: #3f3f3f;
+    color: #dcdccc;
 }
 
 Button:hover {
-    background: ansi_bright_blue;
+    background: #4f4f4f;
 }
 
 /* Progress bars */
@@ -164,11 +165,11 @@ ProgressBar Bar {
 }
 
 ProgressBar Bar > .bar--bar {
-    color: ansi_cyan;
+    color: #8cd0d3;
 }
 
 ProgressBar Bar > .bar--complete {
-    color: ansi_green;
+    color: #7f9f7f;
 }
 
 /* Radio buttons */
@@ -191,68 +192,68 @@ RadioButton:focus {
 
 /* Help text */
 .help-text {
-    color: ansi_bright_black;
+    color: #6f6f6f;
     text-style: italic;
 }
 
 /* Error text */
 .error-text {
-    color: ansi_red;
+    color: #cc9393;
 }
 
 /* Success text */
 .success-text {
-    color: ansi_green;
+    color: #7f9f7f;
 }
 
 /* Loading indicator */
 .loading {
     text-align: center;
-    color: ansi_bright_black;
+    color: #6f6f6f;
 }
 
 /* Header and Menubar */
 Header {
-    background: ansi_blue;
-    color: ansi_white;
+    background: #3f3f3f;
+    color: #dcdccc;
 }
 
 /* Menubar (uses Footer widget, docked to top) */
 Footer {
     width: 100%;
     dock: top;
-    background: #0000aa;
-    color: #ffffff;
+    background: #2e2e2e;
+    color: #dcdccc;
 }
 
 FooterKey {
     width: auto;
-    background: #0000aa;
-    color: #ffffff;
+    background: #2e2e2e;
+    color: #dcdccc;
     .footer-key--key {
-        background: #0000aa;
-        color: #ffffff;
+        background: #2e2e2e;
+        color: #f0dfaf;
         text-style: none;
     }
     .footer-key--description {
-        background: #0000aa;
-        color: #ffffff;
+        background: #2e2e2e;
+        color: #dcdccc;
         text-style: none;
     }
 }
 
 FooterKey:hover {
-    background: #ffffff;
-    color: #0000aa;
+    background: #4f4f4f;
+    color: #dcdccc;
     text-style: none;
     .footer-key--key {
-        background: #ffffff;
-        color: #0000aa;
+        background: #4f4f4f;
+        color: #f0dfaf;
         text-style: none;
     }
     .footer-key--description {
-        background: #ffffff;
-        color: #0000aa;
+        background: #4f4f4f;
+        color: #dcdccc;
         text-style: none;
     }
 }
@@ -261,14 +262,14 @@ FooterKey:hover {
 StatusBar {
     width: 100%;
     height: 1;
-    background: $surface;
+    background: #2e2e2e;
 }
 
 /* PlayBar - transport controls and progress */
 PlayBar {
     width: 100%;
     height: 3;
-    background: $surface;
+    background: #2e2e2e;
 }
 
 PlayBar .transport-btn {
@@ -281,11 +282,10 @@ PlayBar .transport-btn {
 }
 
 PlayBar .transport-btn:hover {
-    background: ansi_blue;
-    color: ansi_white;
+    background: #4f4f4f;
+    color: #dcdccc;
 }
 
 PlayBar .transport-btn:focus {
-    background: ansi_blue;
+    background: #3f3f3f;
 }
-

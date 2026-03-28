@@ -26,18 +26,18 @@ class ColumnSeparator(Widget):
     ColumnSeparator {
         width: 1;
         height: 1;
-        background: ansi_cyan;
-        color: ansi_white;
+        background: #3f3f3f;
+        color: #6f6f6f;
     }
 
     ColumnSeparator:hover {
-        background: ansi_bright_cyan;
-        color: ansi_yellow;
+        background: #4f4f4f;
+        color: #f0dfaf;
     }
 
     ColumnSeparator.-dragging {
-        background: ansi_white;
-        color: ansi_cyan;
+        background: #dcdccc;
+        color: #3f3f3f;
     }
     """
 
@@ -82,13 +82,13 @@ class ColumnHeader(Widget):
     DEFAULT_CSS = """
     ColumnHeader {
         height: 1;
-        background: ansi_cyan;
-        color: ansi_black;
+        background: #3f3f3f;
+        color: #dcdccc;
         text-style: bold;
     }
 
     ColumnHeader:hover {
-        background: ansi_bright_cyan;
+        background: #4f4f4f;
     }
     """
 
