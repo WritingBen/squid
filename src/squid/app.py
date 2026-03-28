@@ -145,6 +145,7 @@ class SquidApp(App):
     def _init_services(self) -> None:
         """Initialize API client and player."""
         try:
+            # Always create the client — auth is checked lazily on first API call
             self.client = YouTubeMusicClient(self.config)
             self.player = MPVBackend(initial_volume=self.config.default_volume)
 
@@ -153,9 +154,6 @@ class SquidApp(App):
             self.player.on_track_end(self._on_track_end)
 
             log.info("Services initialized")
-        except AuthError as e:
-            log.error("Authentication required", error=str(e))
-            self.notify("Authentication required. Run: squid --auth", severity="error")
         except Exception as e:
             log.error("Failed to initialize services", error=str(e))
             self.notify(f"Initialization error: {e}", severity="error")
@@ -244,11 +242,51 @@ class SquidApp(App):
                 loop.close()
 
             self.call_from_thread(self._on_library_loaded, library)
+        except AuthError:
+            log.warning("Auth expired, attempting automatic re-authentication")
+            if self._try_reauth():
+                # Retry library load after successful re-auth
+                try:
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    try:
+                        self.client._ytmusic = None  # Force new YTMusic instance
+                        library = loop.run_until_complete(self.client.get_library_data())
+                    finally:
+                        loop.close()
+                    self.call_from_thread(self._on_library_loaded, library)
+                    self.call_from_thread(
+                        self.notify, "Re-authenticated successfully", severity="information"
+                    )
+                except Exception as e:
+                    log.error("Library load failed after re-auth", error=str(e))
+                    self.call_from_thread(self._show_auth_required)
+            else:
+                self.call_from_thread(self._show_auth_required)
         except Exception as e:
             log.error("Failed to load library", error=str(e))
             self.call_from_thread(
                 self.notify, f"Failed to load library: {e}", severity="error"
             )
+
+    def _try_reauth(self) -> bool:
+        """Attempt to silently re-authenticate by re-extracting browser cookies."""
+        if not self.client:
+            return False
+        try:
+            self.client.auth.authenticate()
+            return True
+        except Exception as e:
+            log.debug("Auto re-auth failed", error=str(e))
+            return False
+
+    def _show_auth_required(self) -> None:
+        """Show a prominent auth-required message."""
+        self.notify(
+            "Session expired. Run 'squid --auth' to re-authenticate.",
+            severity="error",
+            timeout=0,  # Don't auto-dismiss
+        )
 
     def _on_library_loaded(self, library) -> None:
         """Handle library loaded."""

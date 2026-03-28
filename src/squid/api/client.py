@@ -104,8 +104,10 @@ class YouTubeMusicClient:
         try:
             data = await self._run_sync(self.ytmusic.get_liked_songs, limit=limit)
         except KeyError as e:
-            log.warning("Failed to fetch liked songs (auth may have expired)", error=str(e))
-            return Playlist(id="LM", title="Liked Songs", tracks=[], track_count=0)
+            # KeyError with 'Sign in' in the response = expired auth. Let it propagate
+            # so get_library_data() can detect the auth failure pattern.
+            log.warning("Failed to fetch liked songs (auth expired)", error=str(e))
+            raise
         playlist = Playlist(
             id="LM",
             title="Liked Songs",
@@ -210,6 +212,29 @@ class YouTubeMusicClient:
             if isinstance(r, BaseException):
                 labels = ["artists", "albums", "playlists", "liked songs"]
                 log.error("Failed to load library component", component=labels[i], error=str(r))
+
+        # Detect expired auth: the API returns empty lists for artists/albums/playlists
+        # and throws KeyError for liked_songs when not authenticated.
+        # Any exception + all empty results = auth expired.
+        has_any_exception = any(isinstance(r, BaseException) for r in results)
+        all_data_empty = (not artists and not albums and not playlists
+                          and (not isinstance(liked, Playlist) or not liked.tracks))
+
+        if has_any_exception and all_data_empty:
+            from squid.api.auth import AuthError
+            raise AuthError(
+                "All library data is empty and API errors occurred — "
+                "authentication has likely expired."
+            )
+
+        # Also catch the case where everything returns empty with NO exceptions
+        # (can happen if ytmusicapi silently returns empty for all endpoints)
+        if all_data_empty and not any(isinstance(r, BaseException) for r in results):
+            from squid.api.auth import AuthError
+            log.warning("All library data empty — possible auth expiry")
+            raise AuthError(
+                "Library is completely empty — authentication may have expired."
+            )
 
         return LibraryData(
             artists=artists,
